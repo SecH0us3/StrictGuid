@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/benchmarks/">
+    <Project Path="benchmarks/StrictGuid.Benchmarks/StrictGuid.Benchmarks.csproj" />
+  </Folder>
+  <Folder Name="/samples/">
+    <Project Path="samples/StrictGuid.Demo/StrictGuid.Demo.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/StrictGuid.Library/StrictGuid.Library.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/StrictGuid.Tests/StrictGuid.Tests.csproj" />
+  </Folder>
+</Solution>
