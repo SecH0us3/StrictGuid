@@ -13,6 +13,8 @@
     <Description>High-performance, zero-allocation library for UUID v8 (RFC 9562) with strongly typed embedded entities.</Description>
     <PackageTags>guid;uuid;uuidv8;performance;zero-allocation;strongly-typed</PackageTags>
     <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/SecH0us3/StrictGuid</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/SecH0us3/StrictGuid</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
