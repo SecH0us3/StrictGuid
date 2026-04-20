@@ -33,6 +33,20 @@ Performance comparison on .NET 10.0.202 (Apple M1):
 *The `Sequential` mode provides an excellent balance: it is 9x faster than a standard GUID and guarantees correct sorting (prevents index fragmentation) in the DB.*
 *The `Fast` mode outperforms the regular GUID generator by 55 times.*
 
+## Installation
+
+You can install the package from NuGet via the .NET CLI:
+
+```bash
+dotnet add package StrictGuid
+```
+
+Or via the Package Manager Console in Visual Studio:
+
+```powershell
+Install-Package StrictGuid
+```
+
 ## Usage
 
 ### 1. Defining Types
