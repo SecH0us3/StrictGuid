@@ -1,4 +1,8 @@
+> [!WARNING]
+> This project is for experimental/curiosity purposes only and is **not intended for production use**.
+
 # StrictGuid (UUID v8)
+
 
 **StrictGuid** is a high-performance .NET library for working with typed identifiers based on the RFC 9562 standard (UUID v8). It allows you to embed the entity type directly into the GUID, ensuring strict typing at the domain model level without sacrificing performance.
 
