@@ -126,16 +126,14 @@ namespace StrictGuid.Library
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryExtractCustomByte(in Guid id, out byte typeByte)
         {
-            ref byte b = ref Unsafe.As<Guid, byte>(ref Unsafe.AsRef(in id));
+            typeByte = 0;
+            Span<byte> bytes = stackalloc byte[16];
 
-            byte versionByte = BitConverter.IsLittleEndian ? Unsafe.Add(ref b, 7) : Unsafe.Add(ref b, 6);
-            if ((versionByte & 0xF0) != 0x80)
-            {
-                typeByte = 0;
-                return false;
-            }
+            if (!id.TryWriteBytes(bytes, bigEndian: true, out _)) return false;
 
-            typeByte = Unsafe.Add(ref b, TypeByteIndex);
+            if ((bytes[6] & 0xF0) != 0x80) return false;
+
+            typeByte = bytes[TypeByteIndex];
             return true;
         }
     }
