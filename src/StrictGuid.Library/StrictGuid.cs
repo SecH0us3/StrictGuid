@@ -40,12 +40,12 @@ namespace StrictGuid.Library
         /// Extracts the entity type from a StrictGuid without allocations.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static TEnum GetEntityType<TEnum>(this Guid id) where TEnum : struct, Enum
+        public static TEnum GetEntityType<TEnum>(this in Guid id) where TEnum : struct, Enum
         {
             if (Unsafe.SizeOf<TEnum>() != sizeof(byte))
                 ThrowNotByteEnum<TEnum>();
 
-            if (!StrictGuidGenerator.TryExtractCustomByte(id, out byte rawValue))
+            if (!StrictGuidGenerator.TryExtractCustomByte(in id, out byte rawValue))
                 throw new StrictGuidException("The provided Guid is not a valid StrictGuid (UUID v8).");
 
             return Unsafe.As<byte, TEnum>(ref rawValue);
@@ -55,7 +55,7 @@ namespace StrictGuid.Library
         /// Validates that the entity type matches the expected type.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ValidateEntityType<TEnum>(this Guid id, TEnum expectedType) where TEnum : struct, Enum
+        public static void ValidateEntityType<TEnum>(this in Guid id, TEnum expectedType) where TEnum : struct, Enum
         {
             TEnum actualType = id.GetEntityType<TEnum>();
             if (!EqualityComparer<TEnum>.Default.Equals(actualType, expectedType))
@@ -68,12 +68,12 @@ namespace StrictGuid.Library
         /// Returns true if the ID corresponds to the specified entity type.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsEntityType<TEnum>(this Guid id, TEnum expectedType) where TEnum : struct, Enum
+        public static bool IsEntityType<TEnum>(this in Guid id, TEnum expectedType) where TEnum : struct, Enum
         {
             if (Unsafe.SizeOf<TEnum>() != sizeof(byte))
                 ThrowNotByteEnum<TEnum>();
 
-            if (!StrictGuidGenerator.TryExtractCustomByte(id, out byte rawValue))
+            if (!StrictGuidGenerator.TryExtractCustomByte(in id, out byte rawValue))
                 return false;
 
             TEnum actualType = Unsafe.As<byte, TEnum>(ref rawValue);
@@ -124,16 +124,18 @@ namespace StrictGuid.Library
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryExtractCustomByte(Guid id, out byte typeByte)
+        public static bool TryExtractCustomByte(in Guid id, out byte typeByte)
         {
-            typeByte = 0;
-            Span<byte> bytes = stackalloc byte[16];
+            ref byte b = ref Unsafe.As<Guid, byte>(ref Unsafe.AsRef(in id));
 
-            if (!id.TryWriteBytes(bytes, bigEndian: true, out _)) return false;
+            byte versionByte = BitConverter.IsLittleEndian ? Unsafe.Add(ref b, 7) : Unsafe.Add(ref b, 6);
+            if ((versionByte & 0xF0) != 0x80)
+            {
+                typeByte = 0;
+                return false;
+            }
 
-            if ((bytes[6] & 0xF0) != 0x80) return false;
-
-            typeByte = bytes[TypeByteIndex];
+            typeByte = Unsafe.Add(ref b, TypeByteIndex);
             return true;
         }
     }
